@@ -1,0 +1,22 @@
+<div class="login-container">
+    <div class="login-card">
+        <h2>SmartOrder Sync</h2>
+        <p>Acceso para el Personal</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" formControlName="email" placeholder="staff@cafeteria.com">
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" formControlName="password" placeholder="******">
+            </div>
+
+            <button type="submit" [disabled]="loginForm.invalid">
+                Entrar al Sistema
+            </button>
+        </form>
+    </div>
+</div>
