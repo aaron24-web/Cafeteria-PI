@@ -3,19 +3,27 @@
         <h2>SmartOrder Sync</h2>
         <p>Acceso para el Personal</p>
 
+        @if (errorMsg) {
+        <div class="error-banner">{{ errorMsg }}</div>
+        }
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
                 <label>Correo Electrónico</label>
-                <input type="email" formControlName="email" placeholder="staff@cafeteria.com">
+                <input type="email" formControlName="email" placeholder="staff@cafeteria.com" [disabled]="loading">
             </div>
 
             <div class="form-group">
                 <label>Contraseña</label>
-                <input type="password" formControlName="password" placeholder="******">
+                <input type="password" formControlName="password" placeholder="******" [disabled]="loading">
             </div>
 
-            <button type="submit" [disabled]="loginForm.invalid">
+            <button type="submit" [disabled]="loginForm.invalid || loading">
+                @if (loading) {
+                Ingresando...
+                } @else {
                 Entrar al Sistema
+                }
             </button>
         </form>
     </div>

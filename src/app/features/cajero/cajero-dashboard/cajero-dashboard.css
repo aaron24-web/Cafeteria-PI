@@ -13,10 +13,25 @@
     padding: var(--space-md) var(--space-md) 0;
 }
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .cajero-title {
     font-size: var(--font-size-2xl);
     font-weight: 700;
     margin-bottom: var(--space-md);
+}
+
+.btn-logout {
+    font-size: var(--font-size-xs);
+    opacity: 0.7;
+}
+
+.btn-logout:hover {
+    opacity: 1;
 }
 
 /* ─── Tab Bar ─────────────────────────────────────────────── */

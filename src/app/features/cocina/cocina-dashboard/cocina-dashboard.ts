@@ -1,6 +1,8 @@
 import { Component, inject, OnInit, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FirestoreService } from '../../../core/services/firestore.service';
+import { AuthService } from '../../../core/services/auth';
+import { Router } from '@angular/router';
 import { Order } from '../../../core/models/smart-order.model';
 import { Subscription } from 'rxjs';
 
@@ -12,6 +14,8 @@ import { Subscription } from 'rxjs';
 })
 export class CocinaDashboardComponent implements OnInit, OnDestroy {
     private firestoreService = inject(FirestoreService);
+    private authService = inject(AuthService);
+    private router = inject(Router);
     private sub!: Subscription;
 
     pedidos = signal<Order[]>([]);
@@ -85,5 +89,11 @@ export class CocinaDashboardComponent implements OnInit, OnDestroy {
         } else if (pedido.estado === 'listo') {
             await this.firestoreService.actualizarEstadoPedido(pedido.id!, 'en_preparacion');
         }
+    }
+
+    /** Cerrar sesión */
+    async cerrarSesion() {
+        await this.authService.logout();
+        this.router.navigate(['/login']);
     }
 }

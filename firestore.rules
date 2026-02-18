@@ -1,11 +1,42 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Esta regla permite que cualquier persona con el ID de tu proyecto
-    // pueda leer y escribir datos. ¡Solo úsalo durante el desarrollo!
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2026, 3, 18);
+
+    // 1. EL MENÚ (Público): Cualquiera puede ver qué vendemos
+    match /configuracion_negocio/{doc} { allow read: if true; }
+    match /categorias/{doc} { allow read: if true; }
+    match /productos/{doc} { allow read: if true; }
+    match /modificadores_productos/{doc} { allow read: if true; }
+
+    // 2. LAS MESAS: Clientes ven disponibilidad, Staff edita estado
+    match /mesas/{mesaId} {
+      allow read: if true;
+      allow update: if request.auth != null; 
+      allow delete: if false; // Regla 6.11: Bloqueo de borrado
+    }
+
+    // 3. PEDIDOS: Clientes crean/leen el suyo, Staff gestiona todos
+    match /pedidos/{pedidoId} {
+      allow read, create: if true; // En producción: limitar por cliente_uid
+      allow update: if request.auth != null;
+    }
+
+    // 4. DATOS SENSIBLES (Solo Staff): Usuarios, Inventario, Turnos
+    match /usuarios_staff/{userId} {
+      allow read: if request.auth != null;
+      // FIX: Verificar rol en la base de datos (no en el token)
+      allow write: if request.auth != null && 
+        get(/databases/$(database)/documents/usuarios_staff/$(request.auth.uid)).data.rol == 'admin';
+    }
+    
+    match /inventario/{doc} { allow read, write: if request.auth != null; }
+    match /turnos_caja/{doc} { allow read, write: if request.auth != null; }
+
+    // 5. HISTORIAL (Inmutable): Regla 6.5 - Nadie borra ni edita
+    match /ventas_historial/{ventaId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update, delete: if false; 
     }
   }
 }

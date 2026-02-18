@@ -1,0 +1,112 @@
+<div class="admin-page">
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-top">
+            <h1 class="admin-title">👑 Admin — Usuarios</h1>
+            <button class="btn btn-ghost btn-logout" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
+        <p class="admin-subtitle">Gestiona el personal del restaurante</p>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="user-count">
+            <span class="count-number">{{ users().length }}</span> usuarios registrados
+        </div>
+        <button class="btn btn-primary" (click)="toggleForm()">
+            @if (showForm()) { ✕ Cancelar } @else { + Nuevo usuario }
+        </button>
+    </div>
+
+    <!-- ═══ Formulario crear usuario ═══ -->
+    @if (showForm()) {
+    <div class="create-form card animate-slide-up">
+        <h3>Nuevo Usuario</h3>
+
+        @if (errorMsg()) {
+        <div class="error-banner">{{ errorMsg() }}</div>
+        }
+        @if (successMsg()) {
+        <div class="success-banner">{{ successMsg() }}</div>
+        }
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" [(ngModel)]="newUser.nombre" placeholder="Juan Pérez" [disabled]="saving()">
+            </div>
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" [(ngModel)]="newUser.email" placeholder="juan@smartorder.mx" [disabled]="saving()">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" [(ngModel)]="newUser.password" placeholder="Mínimo 6 caracteres"
+                    [disabled]="saving()">
+            </div>
+            <div class="form-group">
+                <label>PIN de acceso</label>
+                <input type="text" [(ngModel)]="newUser.pinAcceso" placeholder="4 dígitos" maxlength="4"
+                    [disabled]="saving()">
+            </div>
+            <div class="form-group">
+                <label>Rol</label>
+                <select [(ngModel)]="newUser.rol" [disabled]="saving()">
+                    @for (rol of roles; track rol.value) {
+                    <option [value]="rol.value">{{ rol.label }}</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" (click)="crearUsuario()" [disabled]="saving()">
+                @if (saving()) { Creando... } @else { Crear usuario }
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- ═══ Lista de usuarios ═══ -->
+    @if (loading()) {
+    <div class="users-list">
+        @for (i of [1,2,3,4]; track i) {
+        <div class="skeleton" style="height: 80px; border-radius: 12px; margin-bottom: 12px;"></div>
+        }
+    </div>
+    } @else if (users().length === 0) {
+    <div class="empty-state">
+        <span class="empty-icon">👤</span>
+        <h3>Sin usuarios</h3>
+        <p>Crea el primer usuario del sistema</p>
+    </div>
+    } @else {
+    <div class="users-list">
+        @for (user of users(); track user.uid; let i = $index) {
+        <div class="user-card card animate-slide-up" [class.inactive]="!user.activo"
+            [style.animation-delay]="(i * 50) + 'ms'">
+            <div class="user-info">
+                <span class="user-icon">{{ getRolIcon(user.rol) }}</span>
+                <div class="user-details">
+                    <span class="user-name">{{ user.nombre }}</span>
+                    <span class="user-email">{{ user.email }}</span>
+                </div>
+            </div>
+
+            <div class="user-actions">
+                <select [ngModel]="user.rol" (ngModelChange)="cambiarRol(user, $event)" class="rol-select">
+                    @for (rol of roles; track rol.value) {
+                    <option [value]="rol.value">{{ rol.label }}</option>
+                    }
+                </select>
+
+                <button class="btn btn-sm" [class.btn-success]="!user.activo" [class.btn-ghost]="user.activo"
+                    (click)="toggleActivo(user)">
+                    @if (user.activo) { Desactivar } @else { Activar }
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

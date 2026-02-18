@@ -1,7 +1,10 @@
 <div class="cajero-page">
     <!-- Header -->
     <header class="cajero-header">
-        <h1 class="cajero-title">🧑‍💼 Cajero</h1>
+        <div class="header-top">
+            <h1 class="cajero-title">🧑‍💼 Cajero</h1>
+            <button class="btn btn-ghost btn-logout" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
         <div class="tab-bar">
             <button class="tab-btn" [class.active]="tabActiva() === 'entregas'" (click)="tabActiva.set('entregas')">
                 🍽 Entregas

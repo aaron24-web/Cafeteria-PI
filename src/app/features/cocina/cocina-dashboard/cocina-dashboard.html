@@ -1,7 +1,10 @@
 <div class="cocina-page">
     <!-- Header -->
     <header class="cocina-header">
-        <h1 class="cocina-title">🔥 Cocina</h1>
+        <div class="header-top">
+            <h1 class="cocina-title">🔥 Cocina</h1>
+            <button class="btn btn-ghost btn-logout" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
         <div class="header-stats">
             <span class="stat">
                 <span class="stat-count pending">{{ pendientes.length }}</span> pendientes
