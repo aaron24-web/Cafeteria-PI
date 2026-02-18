@@ -1,0 +1,67 @@
+<div class="page status-page">
+    <div class="container">
+
+        @if (loading()) {
+        <div class="status-card animate-fade-in">
+            <div class="skeleton" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto;"></div>
+            <div class="skeleton" style="width: 200px; height: 24px; margin: 16px auto 0;"></div>
+            <div class="skeleton" style="width: 150px; height: 16px; margin: 8px auto 0;"></div>
+        </div>
+        }
+
+        @else if (pedido()) {
+        <!-- Success Header -->
+        <div class="success-header animate-slide-up">
+            <div class="success-icon">✓</div>
+            <h1>¡Pedido Enviado!</h1>
+            <p class="order-id">{{ pedido()!.id }}</p>
+        </div>
+
+        <!-- Status Tracker -->
+        <div class="status-tracker animate-slide-up delay-2">
+            @for (estado of estados; track estado.key; let i = $index; let last = $last) {
+            <div class="status-step" [class.completed]="isCompleted(estado.key)"
+                [class.current]="isCurrent(estado.key)">
+                <div class="step-indicator">
+                    <div class="step-circle">
+                        @if (isCompleted(estado.key)) {
+                        <span>{{ estado.icon }}</span>
+                        } @else {
+                        <span class="step-number">{{ i + 1 }}</span>
+                        }
+                    </div>
+                    @if (!last) {
+                    <div class="step-line" [class.completed]="isCompleted(estados[i + 1].key)"></div>
+                    }
+                </div>
+                <span class="step-label">{{ estado.label }}</span>
+            </div>
+            }
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary card animate-slide-up delay-3">
+            <h3 class="summary-title">Resumen del pedido</h3>
+            @for (item of pedido()!.items; track $index) {
+            <div class="summary-item">
+                <div class="summary-item-info">
+                    <span class="summary-qty">{{ item.cantidad }}x</span>
+                    <span class="summary-name">{{ item.nombre }}</span>
+                </div>
+                <span class="summary-price">${{ item.precio_snapshot * item.cantidad | number:'1.2-2' }}</span>
+            </div>
+            }
+            <div class="summary-total">
+                <span>Total</span>
+                <span>${{ pedido()!.total | number:'1.2-2' }}</span>
+            </div>
+        </div>
+
+        <p class="status-hint animate-fade-in delay-4">
+            Esta página se actualiza automáticamente.<br>
+            Te avisaremos cuando tu pedido esté listo.
+        </p>
+        }
+
+    </div>
+</div>

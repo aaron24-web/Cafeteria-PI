@@ -1,13 +1,13 @@
 <div class="menu-container">
   <h1>Nuestro Menú</h1>
-  
+
   <div class="grid">
     <div *ngFor="let product of products$ | async" class="product-card">
-      <h3>{{ product.name }}</h3>
-      <p>{{ product.description }}</p>
-      <span class="price">{{ product.price | currency }}</span>
-      <button [disabled]="!product.available">
-        {{ product.available ? 'Agregar al pedido' : 'Agotado' }}
+      <h3>{{ product.nombre }}</h3>
+      <p>{{ product.descripcion }}</p>
+      <span class="price">{{ product.precio | currency }}</span>
+      <button [disabled]="!product.disponible">
+        {{ product.disponible ? 'Agregar al pedido' : 'Agotado' }}
       </button>
     </div>
   </div>

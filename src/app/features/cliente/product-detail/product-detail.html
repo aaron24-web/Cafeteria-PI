@@ -1,0 +1,73 @@
+<div class="overlay" (click)="cerrar()">
+    <div class="detail-sheet animate-slide-up" (click)="$event.stopPropagation()">
+
+        <!-- Close Button -->
+        <button class="close-btn btn btn-ghost btn-icon" (click)="cerrar()">✕</button>
+
+        <!-- Product Image -->
+        @if (product.imagen_url) {
+        <img [src]="product.imagen_url" [alt]="product.nombre" class="detail-image" />
+        } @else {
+        <div class="detail-image-placeholder">🍽</div>
+        }
+
+        <div class="detail-content">
+            <!-- Product Info -->
+            <h2 class="detail-name">{{ product.nombre }}</h2>
+            <p class="detail-desc">{{ product.descripcion }}</p>
+            <span class="detail-price">${{ product.precio | number:'1.2-2' }}</span>
+
+            <!-- Modificadores -->
+            @for (grupo of modificadores(); track grupo.id) {
+            <div class="mod-group">
+                <div class="mod-header">
+                    <h4 class="mod-title">{{ grupo.nombre }}</h4>
+                    @if (grupo.obligatorio) {
+                    <span class="mod-required">Requerido</span>
+                    }
+                    @if (grupo.seleccion_multiple) {
+                    <span class="mod-hint">Elige varios</span>
+                    }
+                </div>
+                <div class="mod-options">
+                    @for (opcion of grupo.opciones; track opcion.id) {
+                    <button class="mod-option" [class.selected]="isSelected(grupo.id!, opcion.id)"
+                        (click)="toggleOpcion(grupo.id!, opcion.id, grupo.seleccion_multiple)">
+                        <span class="mod-option-name">{{ opcion.nombre }}</span>
+                        @if (opcion.precio_adicional > 0) {
+                        <span class="mod-option-price">+${{ opcion.precio_adicional | number:'1.2-2' }}</span>
+                        }
+                    </button>
+                    }
+                </div>
+            </div>
+            }
+
+            <!-- Especificaciones -->
+            <div class="spec-group">
+                <label class="spec-label">Especificaciones (opcional)</label>
+                <textarea class="spec-input" [(ngModel)]="especificaciones"
+                    placeholder="Ej: Sin cebolla, bien cocido..." rows="2">
+                </textarea>
+            </div>
+
+            <!-- Footer: Quantity + Add Button -->
+            <div class="detail-footer">
+                <div class="quantity-control">
+                    <button class="btn btn-icon btn-secondary" (click)="decrementar()">−</button>
+                    <span class="quantity-value">{{ cantidad() }}</span>
+                    <button class="btn btn-icon btn-secondary" (click)="incrementar()">+</button>
+                </div>
+
+                <button class="btn btn-primary btn-lg add-btn" [class.added]="agregado()" [disabled]="!puedeAgregar"
+                    (click)="agregar()">
+                    @if (agregado()) {
+                    ✓ Agregado
+                    } @else {
+                    Agregar ${{ precioTotal * cantidad() | number:'1.2-2' }}
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FirestoreService } from '../../../core/services/firestore';
+import { FirestoreService } from '../../../core/services/firestore.service';
 
 @Component({
   selector: 'app-product-list',

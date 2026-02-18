@@ -1,0 +1,161 @@
+<div class="cocina-page">
+    <!-- Header -->
+    <header class="cocina-header">
+        <h1 class="cocina-title">🔥 Cocina</h1>
+        <div class="header-stats">
+            <span class="stat">
+                <span class="stat-count pending">{{ pendientes.length }}</span> pendientes
+            </span>
+            <span class="stat">
+                <span class="stat-count cooking">{{ enPreparacion.length }}</span> en preparación
+            </span>
+            <span class="stat">
+                <span class="stat-count ready">{{ listos.length }}</span> listos
+            </span>
+        </div>
+    </header>
+
+    @if (loading()) {
+    <div class="kanban">
+        @for (col of [1,2,3]; track col) {
+        <div class="kanban-column">
+            <div class="column-header skeleton" style="height: 32px;"></div>
+            @for (i of [1,2]; track i) {
+            <div class="skeleton" style="height: 160px; border-radius: 12px; margin-bottom: 12px;"></div>
+            }
+        </div>
+        }
+    </div>
+    } @else {
+    <!-- Kanban Board -->
+    <div class="kanban">
+
+        <!-- ═══ PENDIENTES ═══ -->
+        <div class="kanban-column">
+            <div class="column-header pending">
+                <span class="column-dot pending"></span>
+                <h2>Pendiente</h2>
+                <span class="column-count">{{ pendientes.length }}</span>
+            </div>
+
+            @if (pendientes.length === 0) {
+            <div class="column-empty">
+                <span>🎉</span>
+                <p>Sin pedidos pendientes</p>
+            </div>
+            }
+
+            @for (pedido of pendientes; track pedido.id) {
+            <div class="order-card card pending animate-scale-in">
+                <div class="order-header">
+                    <span class="order-mesa">Mesa {{ mesaNumero(pedido.mesa_id) }}</span>
+                    <span class="order-time">{{ tiempoTranscurrido(pedido.timestamp) }}</span>
+                </div>
+                <ul class="order-items">
+                    @for (item of pedido.items; track $index) {
+                    <li class="order-item">
+                        <span class="item-qty">{{ item.cantidad }}x</span>
+                        <span class="item-name">{{ item.nombre }}</span>
+                        @if (item.especificaciones) {
+                        <span class="item-spec">📝 {{ item.especificaciones }}</span>
+                        }
+                        @for (mod of item.modificadores_aplicados; track mod.opcion_id) {
+                        <span class="item-mod">{{ mod.nombre }}</span>
+                        }
+                    </li>
+                    }
+                </ul>
+                <div class="order-actions">
+                    <button class="btn btn-primary btn-full" (click)="aceptar(pedido)">
+                        👨‍🍳 Aceptar pedido
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- ═══ EN PREPARACIÓN ═══ -->
+        <div class="kanban-column">
+            <div class="column-header cooking">
+                <span class="column-dot cooking"></span>
+                <h2>En Preparación</h2>
+                <span class="column-count">{{ enPreparacion.length }}</span>
+            </div>
+
+            @if (enPreparacion.length === 0) {
+            <div class="column-empty">
+                <span>👨‍🍳</span>
+                <p>Nada cocinándose</p>
+            </div>
+            }
+
+            @for (pedido of enPreparacion; track pedido.id) {
+            <div class="order-card card cooking animate-scale-in">
+                <div class="order-header">
+                    <span class="order-mesa">Mesa {{ mesaNumero(pedido.mesa_id) }}</span>
+                    <span class="order-time cooking-pulse">{{ tiempoTranscurrido(pedido.timestamp) }}</span>
+                </div>
+                <ul class="order-items">
+                    @for (item of pedido.items; track $index) {
+                    <li class="order-item">
+                        <span class="item-qty">{{ item.cantidad }}x</span>
+                        <span class="item-name">{{ item.nombre }}</span>
+                        @if (item.especificaciones) {
+                        <span class="item-spec">📝 {{ item.especificaciones }}</span>
+                        }
+                        @for (mod of item.modificadores_aplicados; track mod.opcion_id) {
+                        <span class="item-mod">{{ mod.nombre }}</span>
+                        }
+                    </li>
+                    }
+                </ul>
+                <div class="order-actions two-actions">
+                    <button class="btn btn-ghost" (click)="deshacer(pedido)">← Regresar</button>
+                    <button class="btn btn-success" (click)="marcarListo(pedido)">
+                        ✅ Listo
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- ═══ LISTOS ═══ -->
+        <div class="kanban-column">
+            <div class="column-header ready">
+                <span class="column-dot ready"></span>
+                <h2>Listo</h2>
+                <span class="column-count">{{ listos.length }}</span>
+            </div>
+
+            @if (listos.length === 0) {
+            <div class="column-empty">
+                <span>✨</span>
+                <p>Sin pedidos listos</p>
+            </div>
+            }
+
+            @for (pedido of listos; track pedido.id) {
+            <div class="order-card card ready animate-scale-in">
+                <div class="order-header">
+                    <span class="order-mesa">Mesa {{ mesaNumero(pedido.mesa_id) }}</span>
+                    <span class="order-time">{{ tiempoTranscurrido(pedido.timestamp) }}</span>
+                </div>
+                <ul class="order-items">
+                    @for (item of pedido.items; track $index) {
+                    <li class="order-item">
+                        <span class="item-qty">{{ item.cantidad }}x</span>
+                        <span class="item-name">{{ item.nombre }}</span>
+                    </li>
+                    }
+                </ul>
+                <div class="order-actions two-actions">
+                    <button class="btn btn-ghost" (click)="deshacer(pedido)">← Regresar</button>
+                    <span class="ready-badge">Esperando entrega</span>
+                </div>
+            </div>
+            }
+        </div>
+
+    </div>
+    }
+</div>

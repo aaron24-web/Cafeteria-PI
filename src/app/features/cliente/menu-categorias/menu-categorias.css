@@ -1,0 +1,207 @@
+/* ─── Header ─────────────────────────────────────────────── */
+.menu-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--color-bg);
+    padding: var(--space-md) var(--space-md) var(--space-sm);
+}
+
+.menu-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    text-align: center;
+}
+
+/* ─── Category Tabs ──────────────────────────────────────── */
+.category-tabs {
+    position: sticky;
+    top: 56px;
+    z-index: 10;
+    background: var(--color-bg);
+    padding: 0 var(--space-md) var(--space-sm);
+}
+
+.tabs-scroll {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tabs-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    flex-shrink: 0;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: var(--color-primary);
+    color: #000;
+    border-color: var(--color-primary);
+    font-weight: 600;
+}
+
+.tab-btn:not(.active):hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-text-muted);
+}
+
+/* ─── Products Grid ──────────────────────────────────────── */
+.products-container {
+    padding-top: var(--space-md);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.product-card {
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.product-card:active {
+    transform: scale(0.97);
+}
+
+.skeleton-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+/* ─── Product Image ──────────────────────────────────────── */
+.product-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+
+.product-image-placeholder {
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-elevated);
+    font-size: 2.5rem;
+    opacity: 0.5;
+}
+
+/* ─── Product Info ───────────────────────────────────────── */
+.product-info {
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+}
+
+.product-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-desc {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-price {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.badge-sold-out {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-error);
+    font-size: var(--font-size-xs);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+}
+
+/* ─── Empty State ────────────────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: var(--space-2xl) 0;
+    color: var(--color-text-muted);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-md);
+    opacity: 0.5;
+}
+
+/* ─── Floating Cart Button ───────────────────────────────── */
+.fab-cart {
+    position: fixed;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-xl);
+    background: var(--color-primary);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-full);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    transition: all var(--transition-base);
+    z-index: 50;
+}
+
+.fab-cart:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+.fab-cart:active {
+    transform: translateX(-50%) scale(0.97);
+}
+
+.fab-cart-icon {
+    font-size: 1.2rem;
+}
+
+.fab-cart-text {
+    font-weight: 600;
+}

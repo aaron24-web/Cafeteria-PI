@@ -1,0 +1,110 @@
+<div class="cajero-page">
+    <!-- Header -->
+    <header class="cajero-header">
+        <h1 class="cajero-title">🧑‍💼 Cajero</h1>
+        <div class="tab-bar">
+            <button class="tab-btn" [class.active]="tabActiva() === 'entregas'" (click)="tabActiva.set('entregas')">
+                🍽 Entregas
+                @if (pedidosListos().length > 0) {
+                <span class="badge badge-primary">{{ pedidosListos().length }}</span>
+                }
+            </button>
+            <button class="tab-btn" [class.active]="tabActiva() === 'mesas'" (click)="tabActiva.set('mesas')">
+                🪑 Mesas
+                @if (mesasSucias.length > 0) {
+                <span class="badge badge-warning">{{ mesasSucias.length }}</span>
+                }
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══ Tab: Entregas ═══ -->
+    @if (tabActiva() === 'entregas') {
+    <main class="tab-content">
+        @if (loading()) {
+        @for (i of [1,2,3]; track i) {
+        <div class="skeleton" style="height: 140px; border-radius: 12px; margin-bottom: 12px;"></div>
+        }
+        } @else if (pedidosListos().length === 0) {
+        <div class="empty-state animate-fade-in">
+            <span class="empty-icon">✨</span>
+            <h3>Todo entregado</h3>
+            <p>No hay pedidos pendientes de entrega</p>
+        </div>
+        } @else {
+        <div class="orders-list">
+            @for (pedido of pedidosListos(); track pedido.id; let i = $index) {
+            <div class="delivery-card card animate-slide-up" [style.animation-delay]="(i * 60) + 'ms'">
+                <div class="delivery-header">
+                    <div class="delivery-mesa">
+                        <span class="mesa-icon">🪑</span>
+                        <span class="mesa-label">Mesa {{ mesaNumero(pedido.mesa_id) }}</span>
+                    </div>
+                    <span class="delivery-time">{{ tiempoTranscurrido(pedido.timestamp) }}</span>
+                </div>
+
+                <ul class="delivery-items">
+                    @for (item of pedido.items; track $index) {
+                    <li>
+                        <span class="item-qty">{{ item.cantidad }}x</span>
+                        <span>{{ item.nombre }}</span>
+                    </li>
+                    }
+                </ul>
+
+                <div class="delivery-footer">
+                    <span class="delivery-total">${{ pedido.total | number:'1.2-2' }}</span>
+                    <button class="btn btn-primary" (click)="entregar(pedido)">
+                        ✅ Marcar como Entregado
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </main>
+    }
+
+    <!-- ═══ Tab: Mesas ═══ -->
+    @if (tabActiva() === 'mesas') {
+    <main class="tab-content">
+        <!-- Resumen -->
+        <div class="mesas-summary">
+            <div class="summary-stat libre">
+                <span class="summary-count">{{ mesasLibres.length }}</span>
+                <span class="summary-label">Libres</span>
+            </div>
+            <div class="summary-stat ocupada">
+                <span class="summary-count">{{ mesasOcupadas.length }}</span>
+                <span class="summary-label">Ocupadas</span>
+            </div>
+            <div class="summary-stat sucia">
+                <span class="summary-count">{{ mesasSucias.length }}</span>
+                <span class="summary-label">Sucias</span>
+            </div>
+        </div>
+
+        <!-- Grid de mesas -->
+        <div class="mesas-grid">
+            @for (mesa of mesas(); track mesa.id; let i = $index) {
+            <div class="mesa-card animate-scale-in" [class]="'mesa-card ' + mesa.estado"
+                [style.animation-delay]="(i * 40) + 'ms'">
+                <div class="mesa-card-number">{{ mesa.numero }}</div>
+                <div class="mesa-card-status">
+                    @switch (mesa.estado) {
+                    @case ('libre') { 🟢 Libre }
+                    @case ('ocupada') { 🔵 Ocupada }
+                    @case ('sucia') { 🟡 Sucia }
+                    }
+                </div>
+                @if (mesa.estado === 'sucia') {
+                <button class="btn btn-sm btn-success mesa-action" (click)="liberarMesa(mesa)">
+                    Liberar mesa
+                </button>
+                }
+            </div>
+            }
+        </div>
+    </main>
+    }
+</div>

@@ -1,0 +1,94 @@
+<div class="page mesa-entry">
+    <div class="container">
+
+        <!-- Loading -->
+        @if (loading()) {
+        <div class="welcome-card animate-fade-in">
+            <div class="skeleton" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto;"></div>
+            <div class="skeleton" style="width: 200px; height: 24px; margin: 16px auto 0;"></div>
+            <div class="skeleton" style="width: 150px; height: 16px; margin: 8px auto 0;"></div>
+        </div>
+        }
+
+        <!-- Error -->
+        @else if (error()) {
+        <div class="welcome-card animate-slide-up">
+            <div class="icon-error">✕</div>
+            <h2>{{ error() }}</h2>
+            <p>Verifica que el código QR sea correcto.</p>
+        </div>
+        }
+
+        <!-- ═══ Mesa LIBRE → Bienvenida normal ═══ -->
+        @else if (mesa()?.estado === 'libre') {
+        <div class="welcome-card animate-slide-up">
+            <div class="restaurant-logo">🍽</div>
+
+            @if (config()) {
+            <h1 class="restaurant-name">{{ config()!.nombre_comercial }}</h1>
+            <p class="restaurant-info">{{ config()!.horario_atencion }}</p>
+            }
+
+            <div class="mesa-badge">
+                <span class="mesa-label">Mesa</span>
+                <span class="mesa-number">{{ mesa()!.numero }}</span>
+            </div>
+
+            <p class="welcome-text">
+                ¡Bienvenido! Explora nuestro menú y haz tu pedido directamente desde tu teléfono.
+            </p>
+
+            <button class="btn btn-primary btn-lg btn-full" (click)="entrarAlMenu()">
+                Ver Menú
+            </button>
+        </div>
+        }
+
+        <!-- ═══ Mesa OCUPADA → Unirse al pedido activo ═══ -->
+        @else if (mesa()?.estado === 'ocupada') {
+        <div class="welcome-card animate-slide-up">
+            <div class="status-icon occupied">🔗</div>
+
+            <div class="mesa-badge occupied">
+                <span class="mesa-label">Mesa</span>
+                <span class="mesa-number">{{ mesa()!.numero }}</span>
+            </div>
+
+            <h2 class="status-title">Pedido en curso</h2>
+            <p class="welcome-text">
+                Esta mesa ya tiene un pedido activo. Puedes ver el estado de tu pedido.
+            </p>
+
+            @if (mesa()!.pedido_activo_id) {
+            <button class="btn btn-primary btn-lg btn-full" (click)="verPedidoActivo()">
+                Ver mi pedido
+            </button>
+            }
+        </div>
+        }
+
+        <!-- ═══ Mesa SUCIA → No disponible ═══ -->
+        @else if (mesa()?.estado === 'sucia') {
+        <div class="welcome-card animate-slide-up">
+            <div class="status-icon dirty">🧹</div>
+
+            <div class="mesa-badge dirty">
+                <span class="mesa-label">Mesa</span>
+                <span class="mesa-number">{{ mesa()!.numero }}</span>
+            </div>
+
+            <h2 class="status-title">Mesa no disponible</h2>
+            <p class="welcome-text">
+                Esta mesa está siendo preparada. En unos momentos estará lista para ti.
+            </p>
+
+            <div class="waiting-indicator">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+        }
+
+    </div>
+</div>

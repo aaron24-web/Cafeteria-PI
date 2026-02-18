@@ -1,0 +1,82 @@
+<div class="page menu-page">
+    <!-- Header -->
+    <header class="menu-header">
+        <h1 class="menu-title">Menú</h1>
+    </header>
+
+    <!-- Category Tabs -->
+    @if (categorias().length > 0) {
+    <nav class="category-tabs">
+        <div class="tabs-scroll">
+            @for (cat of categorias(); track cat.id) {
+            <button class="tab-btn" [class.active]="categoriaActiva() === cat.id"
+                (click)="seleccionarCategoria(cat.id!)">
+                {{ cat.nombre }}
+            </button>
+            }
+        </div>
+    </nav>
+    }
+
+    <!-- Products Grid -->
+    <main class="container products-container">
+        @if (loading()) {
+        <div class="products-grid">
+            @for (i of [1,2,3,4]; track i) {
+            <div class="product-card skeleton-card">
+                <div class="skeleton" style="width: 100%; height: 140px;"></div>
+                <div style="padding: 12px;">
+                    <div class="skeleton" style="width: 70%; height: 18px; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="width: 100%; height: 14px; margin-bottom: 4px;"></div>
+                    <div class="skeleton" style="width: 40%; height: 20px; margin-top: 12px;"></div>
+                </div>
+            </div>
+            }
+        </div>
+        } @else if (productos().length === 0) {
+        <div class="empty-state animate-fade-in">
+            <span class="empty-icon">🍴</span>
+            <p>No hay productos disponibles en esta categoría</p>
+        </div>
+        } @else {
+        <div class="products-grid">
+            @for (product of productos(); track product.id; let i = $index) {
+            <div class="product-card card animate-slide-up" [style.animation-delay]="(i * 50) + 'ms'"
+                (click)="abrirDetalle(product)">
+                @if (product.imagen_url) {
+                <img [src]="product.imagen_url" [alt]="product.nombre" class="product-image" />
+                } @else {
+                <div class="product-image-placeholder">🍽</div>
+                }
+                <div class="product-info">
+                    <h3 class="product-name">{{ product.nombre }}</h3>
+                    <p class="product-desc">{{ product.descripcion }}</p>
+                    <div class="product-footer">
+                        <span class="product-price">
+                            ${{ product.precio | number:'1.2-2' }}
+                        </span>
+                        @if (!product.disponible) {
+                        <span class="badge badge-sold-out">Agotado</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </main>
+
+    <!-- Floating Cart Button -->
+    @if (cartService.itemCount() > 0) {
+    <button class="fab-cart animate-scale-in" (click)="irAlCarrito()">
+        <span class="fab-cart-icon">🛒</span>
+        <span class="fab-cart-text">Ver carrito</span>
+        <span class="badge badge-primary">{{ cartService.itemCount() }}</span>
+    </button>
+    }
+
+    <!-- Product Detail Modal -->
+    @if (productoSeleccionado()) {
+    <app-product-detail [product]="productoSeleccionado()!" (close)="cerrarDetalle()" />
+    }
+</div>

@@ -1,0 +1,77 @@
+<div class="page cart-page">
+    <!-- Header -->
+    <header class="cart-header">
+        <button class="btn btn-ghost btn-icon" (click)="volver()">←</button>
+        <h1 class="cart-title">Tu Pedido</h1>
+        <div style="width: 40px;"></div>
+    </header>
+
+    <main class="container">
+        @if (cartService.items().length === 0) {
+        <div class="empty-cart animate-fade-in">
+            <span class="empty-icon">🛒</span>
+            <h3>Tu carrito está vacío</h3>
+            <p>Agrega productos desde el menú</p>
+            <button class="btn btn-secondary" (click)="volver()">Ir al menú</button>
+        </div>
+        } @else {
+        <!-- Items List -->
+        <div class="cart-items">
+            @for (item of cartService.items(); track $index; let i = $index) {
+            <div class="cart-item card animate-slide-up" [style.animation-delay]="(i * 50) + 'ms'">
+                <div class="item-main">
+                    <div class="item-info">
+                        <h4 class="item-name">{{ item.nombre }}</h4>
+                        @if (item.modificadores_aplicados.length > 0) {
+                        <p class="item-mods">
+                            @for (mod of item.modificadores_aplicados; track mod.opcion_id) {
+                            <span class="mod-tag">{{ mod.nombre }}</span>
+                            }
+                        </p>
+                        }
+                        @if (item.especificaciones) {
+                        <p class="item-specs">📝 {{ item.especificaciones }}</p>
+                        }
+                    </div>
+                    <div class="item-actions">
+                        <span class="item-price">${{ item.precio_snapshot * item.cantidad | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+                <div class="item-footer">
+                    <div class="quantity-control">
+                        <button class="btn btn-ghost btn-icon qty-btn"
+                            (click)="cartService.updateQuantity(i, item.cantidad - 1)">−</button>
+                        <span class="quantity-value">{{ item.cantidad }}</span>
+                        <button class="btn btn-ghost btn-icon qty-btn"
+                            (click)="cartService.updateQuantity(i, item.cantidad + 1)">+</button>
+                    </div>
+                    <button class="btn btn-ghost remove-btn" (click)="cartService.removeItem(i)">Eliminar</button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Totals -->
+        <div class="cart-totals animate-fade-in">
+            <div class="total-row">
+                <span>Subtotal</span>
+                <span>${{ cartService.subtotal() | number:'1.2-2' }}</span>
+            </div>
+            <div class="total-row total-final">
+                <span>Total</span>
+                <span>${{ cartService.total() | number:'1.2-2' }}</span>
+            </div>
+        </div>
+
+        <!-- Confirm Button -->
+        <button class="btn btn-primary btn-lg btn-full confirm-btn animate-slide-up" [disabled]="enviando()"
+            (click)="confirmar()">
+            @if (enviando()) {
+            Enviando pedido...
+            } @else {
+            Confirmar Pedido
+            }
+        </button>
+        }
+    </main>
+</div>
