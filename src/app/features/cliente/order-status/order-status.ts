@@ -1,8 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FirestoreService } from '../../../core/services/firestore.service';
 import { Order } from '../../../core/models/smart-order.model';
+import { switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
     selector: 'app-order-status',
@@ -12,6 +14,7 @@ import { Order } from '../../../core/models/smart-order.model';
 })
 export class OrderStatusComponent implements OnInit {
     private route = inject(ActivatedRoute);
+    private router = inject(Router);
     private firestoreService = inject(FirestoreService);
 
     pedido = signal<Order | null>(null);
@@ -27,10 +30,20 @@ export class OrderStatusComponent implements OnInit {
     ngOnInit() {
         const pedidoId = this.route.snapshot.paramMap.get('pedidoId')!;
 
-        this.firestoreService.getPedido(pedidoId).subscribe({
-            next: (pedido) => {
+        this.firestoreService.getPedido(pedidoId).pipe(
+            tap(pedido => {
                 this.pedido.set(pedido);
                 this.loading.set(false);
+            }),
+            switchMap(pedido => {
+                if (!pedido) return of(null);
+                return this.firestoreService.getMesa(pedido.mesa_id);
+            })
+        ).subscribe({
+            next: (mesa) => {
+                if (mesa && mesa.estado === 'sucia') {
+                    this.router.navigate(['/mesa', mesa.id]);
+                }
             },
             error: () => this.loading.set(false)
         });
